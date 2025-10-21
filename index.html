@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Praktikum 05</title>
+
+    <style>
+        body {
+            display: flex;
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center;      
+            height: 100vh;            
+            margin: 0;                
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        #canva1 {
+            border: 3px solid black;
+            margin-bottom: 20px; 
+        }
+
+        #input-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        input[type="number"] {
+            padding: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 6px 12px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>BINARY SEARCH TREE</h1>
+    <canvas id="canva1" width="1400" height="1000"></canvas>
+    <div id="input-container">
+        <label for="n">Masukan Angka:</label>
+        <input type="number" id="n">
+        <button id="masukan_angka">Go</button>
+    </div>
+
+    <script src="canvas.js"></script>
+</body>
+</html>
