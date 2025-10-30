@@ -1,58 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Praktikum 05</title>
-
+    <title>Binary Search Tree Sort (Visualgo Style)</title>
     <style>
-        body {
-            display: flex;
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center;      
-            height: 100vh;            
-            margin: 0;                
-            background-color: #f0f0f0;
-            font-family: Arial, sans-serif;
-        }
-
-        h1 {
-            margin-bottom: 20px;
-        }
-
-        #canva1 {
-            border: 3px solid black;
-            margin-bottom: 20px; 
-        }
-
-        #input-container {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        input[type="number"] {
-            padding: 5px;
-            font-size: 16px;
-        }
-
-        button {
-            padding: 6px 12px;
-            font-size: 16px;
-            cursor: pointer;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin-top: 20px;
+      }
+      #canva1 {
+        border: 2px solid black;
+        display: block;
+        margin: 20px auto;
+        background: #fdfdfd;
+      }
+      input, button {
+        padding: 8px;
+        font-size: 16px;
+        margin: 5px;
+      }
     </style>
-</head>
-<body>
-    <h1>BINARY SEARCH TREE</h1>
-    <canvas id="canva1" width="1400" height="1000"></canvas>
-    <div id="input-container">
-        <label for="n">Masukan Angka:</label>
-        <input type="number" id="n">
-        <button id="masukan_angka">Go</button>
-    </div>
+  </head>
+  <body>
+    <h2>Binary Search Tree Sort Visualizer</h2>
+    <input type="text" id="inputAngka" placeholder="Masukkan angka, pisahkan dengan koma">
+    <button onclick="buatBST()">Bangun BST</button>
+    <canvas id="canva1" width="2300" height="1500"></canvas>
 
+    <script src="transformasi_matriks.js"></script>
     <script src="canvas.js"></script>
-</body>
-</html>
+    <script>
+    
+    </script>
+  </body>
+  </html>
