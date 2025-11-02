@@ -122,6 +122,8 @@ var contex1;
 contex1 = cnv.getContext("2d");
 var imageData = contex1.getImageData(0, 0, cnv.width, cnv.height);
 
+
+
 function draw() {
   var input = document.getElementById("inputAngka");
   var tombol = document.querySelector("button");
@@ -205,6 +207,74 @@ function draw() {
     return root;
   }
 
+  function minValueNode(node) {
+  let current = node;
+  while (current.left !== null) current = current.left;
+  return current;
+}
+
+function deleteNode(root, value) {
+  // Step 1: delete seperti BST biasa
+  if (root === null) return root;
+
+  if (value < root.val) {
+    root.left = deleteNode(root.left, value);
+  } else if (value > root.val) {
+    root.right = deleteNode(root.right, value);
+  } else {
+    // Node ditemukan
+    if (root.left === null || root.right === null) {
+      let temp = root.left ? root.left : root.right;
+
+      // Tidak punya anak
+      if (temp === null) {
+        root = null;
+      } else {
+        root = temp;
+      }
+    } else {
+      // Dua anak -> ambil inorder successor
+      let temp = minValueNode(root.right);
+      root.val = temp.val;
+      root.right = deleteNode(root.right, temp.val);
+    }
+  }
+
+  // Jika sudah null (base case)
+  if (root === null) return root;
+
+  // Step 2: Update tinggi node
+  root.height = 1 + Math.max(tinggi(root.left), tinggi(root.right));
+
+  // Step 3: Hitung balance factor
+  let balance = Balance(root);
+
+  // Step 4: Rotasi AVL
+  // Left Left
+  if (balance > 1 && Balance(root.left) >= 0) {
+    return rotasiKanan(root);
+  }
+
+  // Left Right
+  if (balance > 1 && Balance(root.left) < 0) {
+    root.left = rotasiKiri(root.left);
+    return rotasiKanan(root);
+  }
+
+  // Right Right
+  if (balance < -1 && Balance(root.right) <= 0) {
+    return rotasiKiri(root);
+  }
+
+  // Right Left
+  if (balance < -1 && Balance(root.right) > 0) {
+    root.right = rotasiKanan(root.right);
+    return rotasiKiri(root);
+  }
+
+  return root;
+}
+
   function aturPosisiNode(node, depth, xMin, xMax) {
     if (node === null) return;
     node.y = 80 * depth;
@@ -257,6 +327,49 @@ function draw() {
     if (nilai !== nilai){
       return;
     }
+
+  document.getElementById("hapusButton").onclick = function () {
+  var nilai = parseInt(input.value);
+  if (isNaN(nilai)) return;
+
+  window.root = deleteNode(window.root, nilai);
+
+  // Gambar ulang tree
+  aturPosisiNode(window.root, 1, 50, cnv.width - 50);
+
+  var batas = { minX: Infinity, maxX: -Infinity };
+  cariBatas(window.root, batas);
+  var treeWidth = batas.maxX - batas.minX;
+  var centerShift = cnv.width / 2 - (batas.minX + treeWidth / 2);
+  geserNode(window.root, centerShift);
+
+  // Reset canvas
+  imageData = contex1.getImageData(0, 0, cnv.width, cnv.height);
+  for (let i = 0; i < imageData.data.length; i += 4) {
+    imageData.data[i] = 255;
+    imageData.data[i + 1] = 255;
+    imageData.data[i + 2] = 255;
+    imageData.data[i + 3] = 255;
+  }
+
+  gambarNode(imageData, window.root);
+  contex1.putImageData(imageData, 0, 0);
+
+  // Tampilkan angka node
+  function gambarTeks(node) {
+    if (node === null) return;
+    contex1.font = "16px Arial";
+    contex1.fillStyle = "black";
+    var teks = node.val.toString();
+    var offsetText = teks.length === 1 ? 5 : 10;
+    contex1.fillText(teks, node.x - offsetText, node.y + 5);
+    gambarTeks(node.left);
+    gambarTeks(node.right);
+  }
+  gambarTeks(window.root);
+
+  input.value = "";
+};
 
     window.root = insertNode(window.root, nilai);
     aturPosisiNode(window.root, 1, 50, cnv.width - 50);
