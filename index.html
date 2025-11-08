@@ -6,38 +6,116 @@
     <title>Binary Search Tree Sort (Visualgo Style)</title>
 
     <style>
+      * {
+        box-sizing: border-box;
+      }
       body {
-        font-family: Arial, sans-serif;
-        text-align: center;
-        margin-top: 20px;
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f8f9fc, #e3e9f2);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        color: #333;
       }
-      #canva1 {
-        border: 2px solid black;
-        display: block;
-        margin: 20px auto;
-        background: #fdfdfd;
+
+      /* ==== Title ==== */
+      h2 {
+        margin-top: 30px;
+        font-size: 2rem;
+        color: #1a237e;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
       }
-      input,
-      button {
-        padding: 8px;
+
+      /* ==== Control Panel ==== */
+      .control-panel {
+        background: white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        padding: 20px 30px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: center;
+        margin: 20px 0;
+      }
+
+      input[type="text"] {
+        padding: 10px 15px;
         font-size: 16px;
-        margin: 5px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        width: 250px;
+        outline: none;
+        transition: 0.3s;
+      }
+      input[type="text"]:focus {
+        border-color: #1a73e8;
+        box-shadow: 0 0 6px rgba(26, 115, 232, 0.4);
+      }
+
+      button {
+        padding: 10px 18px;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        background: linear-gradient(90deg, #1a73e8, #4fc3f7);
+        color: white;
+        font-weight: 600;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(26, 115, 232, 0.3);
+      }
+      button:active {
+        transform: scale(0.97);
+      }
+
+      #hapusButton {
+        background: linear-gradient(90deg, #e53935, #ef5350);
+      }
+
+      #canva1 {
+        border: 2px solid #1a237e;
+        background: white;
+        border-radius: 16px;
+        display: block;
+        margin: 0 auto 50px auto;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        transition: 0.3s;
+      }
+      #canva1:hover {
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      }
+
+      footer {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 20px;
       }
     </style>
   </head>
   <body>
-    <h2>Binary Search Tree Sort Visualizer</h2>
-    <input
-      type="text"
-      id="inputAngka"
-      placeholder="Masukkan angka"
-    />
-    <button onclick="buatBST()">Bangun BST</button>
-    <button id="hapusButton">Hapus Node</button>
+    <h2>🌳 Binary Search Tree Sort Visualizer</h2>
+
+    <div class="control-panel">
+      <input
+        type="text"
+        id="inputAngka"
+        placeholder="Masukkan angka"
+      />
+      <button onclick="buatBST()">Bangun BST</button>
+      <button id="hapusButton">Hapus Node</button>
+    </div>
+
     <canvas id="canva1" width="2300" height="1500"></canvas>
+
+    <footer>Made with ❤️ by BST Visualizer</footer>
 
     <script src="transformasi_matriks.js"></script>
     <script src="canvas.js"></script>
-    <script></script>
   </body>
 </html>

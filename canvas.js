@@ -1,4 +1,5 @@
 var cnv;
+//Fungsi ini menggambar satu pixel warna di lokasi (x, y).
 function gambar_titik(imageData, x, y, r, g, b) {
   var index;
   index = 4 * (Math.ceil(x) + Math.ceil(y) * cnv.width);
@@ -9,6 +10,7 @@ function gambar_titik(imageData, x, y, r, g, b) {
 }
 
 function dda_line(imageData, x1, y1, x2, y2, r, g, b) {
+  //Menggambar garis antara dua titik menggunakan algoritma DDA
   var dx = x2 - x1;
   var dy = y2 - y1;
 
@@ -44,6 +46,7 @@ function dda_line(imageData, x1, y1, x2, y2, r, g, b) {
 }
 
 function lingkaran_polar(imageData, xc, yc, radius, r, g, b) {
+  //Menggambar lingkaran node dengan metode persamaan polar.
   for (var theta = 0; theta < Math.PI * 2; theta += 0.001) {
     var x = xc + radius * Math.cos(theta);
     var y = yc + radius * Math.sin(theta);
@@ -65,6 +68,7 @@ function draw() {
   }
 
   function tinggi(node) {
+    //Mengembalikan tinggi sebuah node dalam tree. Digunakan untuk perhitungan balance AVL.
     if (node === null) {
       return 0;
     }
@@ -72,6 +76,7 @@ function draw() {
   }
 
   function Balance(node) {
+    //Menghitung balance factor (selisih tinggi kiri & kanan). Menentukan apakah node butuh rotasi
     if (node === null) {
       return 0;
     }
@@ -79,6 +84,7 @@ function draw() {
   }
 
   function rotasiKanan(y) {
+    //Operasi AVL rotation untuk memperbaiki tree yang miring ke kanan
     let x = y.left;
     let T2 = x.right;
 
@@ -92,6 +98,7 @@ function draw() {
   }
 
   function rotasiKiri(x) {
+    //Operasi AVL rotation untuk memperbaiki tree yang miring ke kiri
     let y = x.right;
     let T2 = y.left;
 
@@ -105,6 +112,7 @@ function draw() {
   }
 
   function insertNode(root, value) {
+    //Menambah node ke BST, update tinggi, cek balance, dan lakukan rotasi bila perlu menjadikan tree AVL seimbang
     if (root === null) {
       return { val: value, left: null, right: null, height: 1, x: 0, y: 0 };
     }
@@ -140,12 +148,14 @@ function draw() {
   }
 
   function minValueNode(node) {
+    //Mencari node dengan nilai terkecil (dipakai saat delete, mengambil inorder successor)
     let current = node;
     while (current.left !== null) current = current.left;
     return current;
   }
 
   function deleteNode(root, value) {
+    //Menghapus node di BST, lalu re-balance tree dengan rotasi → menjaga sifat AVL tetap benar
     // Step 1: delete seperti BST biasa
     if (root === null) return root;
 
@@ -154,51 +164,40 @@ function draw() {
     } else if (value > root.val) {
       root.right = deleteNode(root.right, value);
     } else {
-      // Node ditemukan
       if (root.left === null || root.right === null) {
         let temp = root.left ? root.left : root.right;
 
-        // Tidak punya anak
         if (temp === null) {
           root = null;
         } else {
           root = temp;
         }
       } else {
-        // Dua anak -> ambil inorder successor
         let temp = minValueNode(root.right);
         root.val = temp.val;
         root.right = deleteNode(root.right, temp.val);
       }
     }
 
-    // Jika sudah null (base case)
     if (root === null) return root;
 
-    // Step 2: Update tinggi node
     root.height = 1 + Math.max(tinggi(root.left), tinggi(root.right));
 
-    // Step 3: Hitung balance factor
     let balance = Balance(root);
 
-    // Step 4: Rotasi AVL
-    // Left Left
     if (balance > 1 && Balance(root.left) >= 0) {
       return rotasiKanan(root);
     }
 
-    // Left Right
     if (balance > 1 && Balance(root.left) < 0) {
       root.left = rotasiKiri(root.left);
       return rotasiKanan(root);
     }
 
-    // Right Right
     if (balance < -1 && Balance(root.right) <= 0) {
       return rotasiKiri(root);
     }
 
-    // Right Left
     if (balance < -1 && Balance(root.right) > 0) {
       root.right = rotasiKanan(root.right);
       return rotasiKiri(root);
@@ -208,6 +207,7 @@ function draw() {
   }
 
   function aturPosisiNode(node, depth, xMin, xMax) {
+    //Mengatur posisi (x, y) setiap node agar tampilan tree rata dan seimbang pada canvas
     if (node === null) {
       return;
     }
@@ -218,6 +218,7 @@ function draw() {
   }
 
   function cariBatas(node, minmax) {
+    //Mencari batas kiri & kanan pohon untuk nanti digeser ke tengah canvas
     if (node === null) {
       return;
     }
@@ -232,6 +233,7 @@ function draw() {
   }
 
   function geserNode(node, dx) {
+    //Menggeser seluruh node secara horizontal agar tree selalu berada di tengah
     if (node === null) {
       return;
     }
@@ -240,7 +242,58 @@ function draw() {
     geserNode(node.right, dx);
   }
 
+  // Pola  5x7 untuk angka 0-9 (1 berarti titik menyala)
+  const angka = {
+    0: ["01110", "10001", "10011", "10101", "11001", "10001", "01110"],
+    1: ["00100", "01100", "00100", "00100", "00100", "00100", "01110"],
+    2: ["01110", "10001", "00001", "00010", "00100", "01000", "11111"],
+    3: ["11110", "00001", "00001", "01110", "00001", "00001", "11110"],
+    4: ["00010", "00110", "01010", "10010", "11111", "00010", "00010"],
+    5: ["11111", "10000", "11110", "00001", "00001", "10001", "01110"],
+    6: ["01110", "10000", "11110", "10001", "10001", "10001", "01110"],
+    7: ["11111", "00001", "00010", "00100", "01000", "10000", "10000"],
+    8: ["01110", "10001", "10001", "01110", "10001", "10001", "01110"],
+    9: ["01110", "10001", "10001", "01111", "00001", "00010", "01100"],
+  };
+
+  // Menggambar satu angka dengan titik
+  function gambarDigit(imageData, digit, offsetX, offsetY, warna = [0, 0, 0]) {
+    const pola = angka[digit];
+    if (!pola) return;
+    const size = 2; // ukuran tiap titik
+    for (let y = 0; y < pola.length; y++) {
+      for (let x = 0; x < pola[y].length; x++) {
+        if (pola[y][x] === "1") {
+          // titik  nyala
+          for (let i = 0; i < size; i++) {
+            for (let j = 0; j < size; j++) {
+              gambar_titik(imageData, offsetX + x * size + i, offsetY + y * size + j, warna[0], warna[1], warna[2]);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Menggambar seluruh angka node di tengah lingkaran
+  function gambarAngka(imageData, node) {
+    if (node === null) return;
+
+    const teks = node.val.toString();
+    const totalLebar = teks.length * 12; // lebar total (tiap angka 12px termasuk jarak)
+    let startX = node.x - totalLebar / 2;
+    let startY = node.y - 10; // sedikit ke atas agar di tengah
+
+    for (let i = 0; i < teks.length; i++) {
+      gambarDigit(imageData, teks[i], startX + i * 12, startY, [0, 0, 0]);
+    }
+
+    gambarAngka(imageData, node.left);
+    gambarAngka(imageData, node.right);
+  }
+
   function gambarNode(imageData, node) {
+    //Menggambar lingkaran node + garis penghubung antar node secara rekursif
     if (node === null) {
       return;
     }
@@ -256,24 +309,10 @@ function draw() {
     gambarNode(imageData, node.right);
   }
 
-  function gambarTeks(node) {
-    if (node === null) {
-      return;
-    }
-    contex1.font = "16px Arial";
-    contex1.fillStyle = "black";
-    var teks = node.val.toString();
-    var offsetText = teks.length === 1 ? 5 : 10;
-    contex1.fillText(teks, node.x - offsetText, node.y + 5);
-    gambarTeks(node.left);
-    gambarTeks(node.right);
-  }
-
   function animasiInsert(node) {
     if (node === null) {
       return;
     }
-    
     var langkah = 10;
     var posisiAkhirY = node.y;
     var posisiAwalY = node.y - 200;
@@ -296,15 +335,17 @@ function draw() {
         imageData.data[i + 2] = 255;
         imageData.data[i + 3] = 255;
       }
+
       gambarNode(imageData, window.root);
-      contex1.putImageData(imageData, 0, 0);
-      gambarTeks(window.root);
+      gambarAngka(imageData, window.root); // tambahkan di sini
+      contex1.putImageData(imageData, 0, 0); // baru tampilkan hasilnya
     }, 50);
   }
 
   function renderUlang() {
     aturPosisiNode(window.root, 1, 50, cnv.width - 50);
-    var batas = { minX: Infinity, maxX: -Infinity };
+    var batas = { minX: cnv.width, maxX: 0 };
+
     cariBatas(window.root, batas);
     var treeWidth = batas.maxX - batas.minX;
     var centerShift = cnv.width / 2 - (batas.minX + treeWidth / 2);
@@ -316,12 +357,14 @@ function draw() {
       imageData.data[i + 2] = 255;
       imageData.data[i + 3] = 255;
     }
+
     gambarNode(imageData, window.root);
-    contex1.putImageData(imageData, 0, 0);
-    gambarTeks(window.root);
+    gambarAngka(imageData, window.root); // digambar langsung ke imageData yang sama
+    contex1.putImageData(imageData, 0, 0); // tampilkan hasil ke canvas
   }
 
   function cariNode(root, val) {
+    //Mencari node dengan nilai tertentu dalam BST (digunakan untuk delete dan animasi)
     if (root === null) {
       return null;
     }
@@ -371,7 +414,7 @@ function draw() {
       // perbarui posisi dan render ulang
       aturPosisiNode(window.root, 1, 50, cnv.width - 50);
 
-      var batas = { minX: Infinity, maxX: -Infinity };
+      var batas = { minX: cnv.width, maxX: 0 };
       cariBatas(window.root, batas);
       var treeWidth = batas.maxX - batas.minX;
       var centerShift = cnv.width / 2 - (batas.minX + treeWidth / 2);
@@ -384,7 +427,8 @@ function draw() {
     window.root = insertNode(window.root, nilai);
     aturPosisiNode(window.root, 1, 50, cnv.width - 50);
 
-    var batas = { minX: Infinity, maxX: -Infinity };
+    var batas = { minX: cnv.width, maxX: 0 };
+
     cariBatas(window.root, batas);
     var treeWidth = batas.maxX - batas.minX;
     var centerShift = cnv.width / 2 - (batas.minX + treeWidth / 2);
