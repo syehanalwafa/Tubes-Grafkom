@@ -51,72 +51,6 @@ function lingkaran_polar(imageData, xc, yc, radius, r, g, b) {
   }
 }
 
-function FloodFill(imageData, cnv, x, y, toFlood, color) {
-  var index = 4 * (x + y * cnv.width);
-  var r1 = imageData.data[index];
-  var g1 = imageData.data[index + 1];
-  var b1 = imageData.data[index + 2];
-
-  if (toFlood.r == r1 && toFlood.g == g1 && toFlood.b == b1) {
-    imageData.data[index] = color.r;
-    imageData.data[index + 1] = color.g;
-    imageData.data[index + 2] = color.b;
-    imageData.data[index + 3] = 255;
-
-    FloodFill(imageData, cnv, x + 1, y, toFlood, color);
-    FloodFill(imageData, cnv, x - 1, y, toFlood, color);
-    FloodFill(imageData, cnv, x, y + 1, toFlood, color);
-    FloodFill(imageData, cnv, x, y - 1, toFlood, color);
-  }
-}
-
-function polygon(imageData, point_array, r, g, b) {
-  for (var i = 0; i < point_array.length - 1; i++) {
-    var x1 = point_array[i].x;
-    var y1 = point_array[i].y;
-    var x2 = point_array[i + 1].x;
-    var y2 = point_array[i + 1].y;
-
-    dda_line(imageData, x1, y1, x2, y2, r, g, b);
-  }
-
-  var x1 = point_array[point_array.length - 1].x;
-  var y1 = point_array[point_array.length - 1].y;
-  var x2 = point_array[0].x;
-  var y2 = point_array[0].y;
-  dda_line(imageData, x1, y1, x2, y2, r, g, b);
-}
-
-function FloodFillStack(imageData, cnv, x, y, toFlood, color) {
-  var index = 4 * (x + y * cnv.width);
-  var r1 = imageData.data[index];
-  var g1 = imageData.data[index + 1];
-  var b1 = imageData.data[index + 2];
-
-  var tumpukan = [];
-  tumpukan.push({ x: x, y: y });
-
-  while (tumpukan.length > 0) {
-    var titikS = tumpukan.pop();
-    var indexS = 4 * (titikS.x + titikS.y * cnv.width);
-    var r1 = imageData.data[indexS];
-    var g1 = imageData.data[indexS + 1];
-    var b1 = imageData.data[indexS + 2];
-
-    if (toFlood.r == r1 && toFlood.g == g1 && toFlood.b == b1) {
-      imageData.data[indexS] = color.r;
-      imageData.data[indexS + 1] = color.g;
-      imageData.data[indexS + 2] = color.b;
-      imageData.data[indexS + 3] = 255;
-
-      tumpukan.push({ x: titikS.x + 1, y: titikS.y });
-      tumpukan.push({ x: titikS.x - 1, y: titikS.y });
-      tumpukan.push({ x: titikS.x, y: titikS.y + 1 });
-      tumpukan.push({ x: titikS.x, y: titikS.y - 1 });
-    }
-  }
-}
-
 cnv = document.querySelector("#canva1");
 var contex1;
 contex1 = cnv.getContext("2d");
@@ -274,7 +208,9 @@ function draw() {
   }
 
   function aturPosisiNode(node, depth, xMin, xMax) {
-    if (node === null) return;
+    if (node === null) {
+      return;
+    }
     node.y = 80 * depth;
     node.x = (xMin + xMax) / 2;
     aturPosisiNode(node.left, depth + 1, xMin, node.x - 40);
@@ -333,37 +269,11 @@ function draw() {
     gambarTeks(node.right);
   }
 
-  tombol.onclick = function () {
-    var nilai = parseInt(input.value);
-    if (nilai !== nilai) {
-      return;
-    }
-
-    window.root = insertNode(window.root, nilai);
-    aturPosisiNode(window.root, 1, 50, cnv.width - 50);
-
-    var batas = { minX: Infinity, maxX: -Infinity };
-    cariBatas(window.root, batas);
-    var treeWidth = batas.maxX - batas.minX;
-    var centerShift = cnv.width / 2 - (batas.minX + treeWidth / 2);
-    geserNode(window.root, centerShift);
-
-    imageData = contex1.getImageData(0, 0, cnv.width, cnv.height);
-    for (let i = 0; i < imageData.data.length; i += 4) {
-      imageData.data[i] = 255;
-      imageData.data[i + 1] = 255;
-      imageData.data[i + 2] = 255;
-      imageData.data[i + 3] = 255;
-    }
-
-    gambarNode(imageData, window.root);
-    contex1.putImageData(imageData, 0, 0);
-  };
-
   function animasiInsert(node) {
     if (node === null) {
       return;
     }
+    
     var langkah = 10;
     var posisiAkhirY = node.y;
     var posisiAwalY = node.y - 200;
@@ -412,9 +322,15 @@ function draw() {
   }
 
   function cariNode(root, val) {
-    if (!root) return null;
-    if (val === root.val) return root;
-    if (val < root.val) return cariNode(root.left, val);
+    if (root === null) {
+      return null;
+    }
+    if (val === root.val) {
+      return root;
+    }
+    if (val < root.val) {
+      return cariNode(root.left, val);
+    }
     return cariNode(root.right, val);
   }
 
@@ -432,9 +348,9 @@ function draw() {
 
       // Mencari node yang akan dihapus
       var nodeHapus = cariNode(window.root, nilai);
-      if (nodeHapus === null){
+      if (nodeHapus === null) {
         return;
-      } 
+      }
 
       // simpan hasil delete ke root baru
       window.root = deleteNode(window.root, nilai);
